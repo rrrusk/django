@@ -48,11 +48,23 @@ def tube(request):
 def form(request):
 	if request.method == "POST": #requestがPOSTかGETか判別
 		form = CountForm(request.POST) #request.POSTは辞書のようなデータなのでそのままEntryFormに渡せる
+		print request.POST
+		print request.POST['num']
 		if form.is_valid(): # エラーがないか判別
-			form.save() #エラーがないのでsave()
+			Count.objects.filter(id=1).update(num= request.POST['num'])
 			form = CountForm() #保存したのでフォームを空に、is_valid()でFalseの場合はerrosや入れられた値を持ったまま
 	else:
-		 form = CountForm() #GETなので空のフォームを作る
-	cnum = Count.objects.latest('id').num
+		form = CountForm() #GETなので空のフォームを作る
+		if not Count.objects.all():
+			c = Count()
+			c.num = 1
+			c.save()
+		else:
+			cnum = Count.objects.all()[0].num
+			cnum += 1
+			Count.objects.filter(id=1).update(num=cnum)
+
+	# cnums = [x.num for x in Count.objects.all()]
+	cnum = Count.objects.all()[0].num
 	# formとobject_listをテンプレートに渡す
-	return  render_to_response("form.html",context_instance=RequestContext(request,{"form":form,"cnum":cnum}))
+	return  render_to_response("form.html",RequestContext(request,{"form":form,"cnum":cnum}))

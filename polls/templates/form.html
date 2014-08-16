@@ -1,4 +1,8 @@
-{{ cnum }}
+<style>
+ul{list-style:none;}
+</style>
+
+ページを訪れた回数{{ cnum }}
 <form method="POST" action="/polls/form" >{% csrf_token %}
     <table>
         {{ form }}
