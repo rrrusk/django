@@ -1,0 +1,7 @@
+{{ cnum }}
+<form method="POST" action="/polls/form" >{% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <input type="submit" />
+</form>
