@@ -45,6 +45,37 @@ def tube(request):
 	context = {'feed' : feed}
 	return render(request, 'polls/tube.html', context)
 
+def you(request):
+	from apiclient.discovery import build
+	from apiclient.errors import HttpError
+	import pprint
+
+	DEVELOPER_KEY = "AIzaSyD3TnRkfHqDBcAjD0vGfpCE473hwje12tg"
+	YOUTUBE_API_SERVICE_NAME = "youtube"
+	YOUTUBE_API_VERSION = "v3"
+
+	youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+	developerKey=DEVELOPER_KEY)
+
+	# Call the search.list method to retrieve results matching the specified
+	# query term.
+	search_response = youtube.search().list(
+	q="google",
+	part="snippet",
+	type="video",
+	maxResults=1,
+	).execute()
+
+	videos = []
+
+	for search_result in search_response.get("items", []):
+		videos.append("%s" % (search_result["id"]["videoId"]))
+
+	print "Videos:\n", "\n".join(videos), "\n"
+	print search_response.get("items", [])
+	pprint.pprint(search_response,indent=4)
+	return HttpResponse('hello')
+
 def form(request):
 	if request.method == "POST": #requestがPOSTかGETか判別
 		form = CountForm(request.POST) #request.POSTは辞書のようなデータなのでそのままEntryFormに渡せる
